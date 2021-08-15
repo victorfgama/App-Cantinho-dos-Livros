@@ -4,24 +4,30 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios",
-    "start": "react-native start",
-    "test": "jest",
-    "lint": "eslint ."
+    "android-release": "react-native run-android --variant=release",
+    "ios": "react-native run-ios --simulator= iPhone XR",
+    "start": "react-native start --reset-cache",
+    "clean": "sudo watchman watch-del-all && cd android && ./gradlew clean && cd .. && sudo npm cache clean --force ",
+    "tudo": "sudo npm i && npm run clean && npm run android",
+    "all": "sudo npm i && npm run clean && npx pod-install && npm run ios ",
+    "apk-debug": "npm run clean && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/ && cd android && ./gradlew assembleDebug && cd ..",
+    "aab-debug": "npm run clean && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/ && cd android && ./gradlew bundleDebug && cd ..",
+    "apk-release": "npm run clean && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/ && rm -rf android/app/src/main/res/drawable-* && rm -rf android/app/src/main/res/raw/* && cd android && ./gradlew assembleRelease && cd ..",
+    "aab-release": "npm run clean && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/ && rm -rf android/app/src/main/res/drawable-* && rm -rf android/app/src/main/res/raw/* && cd android && ./gradlew bundleRelease && cd .."
   },
   "dependencies": {
-    "@react-native-community/checkbox": "^0.5.7",
+    "@react-native-community/checkbox": "^0.5.8",
     "react": "17.0.2",
-    "react-native": "0.64.1"
+    "react-native": "0.64.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.3",
-    "@babel/runtime": "^7.14.0",
-    "@react-native-community/eslint-config": "^2.0.0",
-    "babel-jest": "^27.0.2",
-    "eslint": "7.27.0",
-    "jest": "^27.0.3",
-    "metro-react-native-babel-preset": "^0.66.0",
+    "@babel/core": "^7.15.0",
+    "@babel/runtime": "^7.15.3",
+    "@react-native-community/eslint-config": "^3.0.0",
+    "babel-jest": "^27.0.6",
+    "eslint": "7.32.0",
+    "jest": "^27.0.6",
+    "metro-react-native-babel-preset": "^0.66.2",
     "react-test-renderer": "17.0.2"
   },
   "jest": {
