@@ -1,16 +1,47 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { View, StyleSheet, FlatList, Text } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import CelulaItem from './CelulaItem'
+import FAB from 'react-native-fab'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { Modalize } from 'react-native-modalize';
 
-let listaLivros = [
-    { nome: '7 Vidas de um cachorro', possui: true, lido: false, tema: 'terror' },
-    { nome: 'Harry Potter', possui: true, lido: true, tema: 'terror' },
-    { nome: 'Senhor dos Aneis', possui: false, lido: false, tema: 'terror' },
-    { nome: 'Biblia', possui: false, lido: true, tema: 'ficção' },
-    { nome: 'Romeu e Julieta', possui: true, lido: true, tema: 'romance' }
-]
+
 
 export default function Itens() {
+
+    const [listaLivros, setListaLivros] = useState(
+        [
+            // { key: 1, nome: '7 Vidas de um cachorro', possui: true, lido: false, tema: 'terror' },
+            // { key: 2, nome: 'Harry Potter', possui: true, lido: true, tema: 'terror' },
+            // { key: 3, nome: 'Senhor dos Aneis', possui: false, lido: false, tema: 'terror' },
+            // { key: 4, nome: 'Biblia', possui: false, lido: true, tema: 'ficção' },
+            // { key: 5, nome: 'Romeu e Julieta', possui: true, lido: true, tema: 'romance' }
+        ]
+    )
+
+    const modalizeRef = useRef(null);
+
+    const onOpen = () => {
+        modalizeRef.current.open();
+    };
+
+    const getListaStorage = async () => {
+
+        try {
+            const value = await AsyncStorage.getItem('@lista')
+            if (value !== null) {
+                setListaLivros(JSON.parse(value))
+            }
+        } catch (e) {
+            // error reading value
+        }
+    }
+
+    useEffect(() => {
+        getListaStorage()
+    }, [])
+
     return (
 
         <View style={styles.container} >
@@ -27,10 +58,23 @@ export default function Itens() {
             </View>
             <FlatList
                 data={listaLivros}
-                renderItem={(item) => <CelulaItem {...item} key={item.index} />}
+                renderItem={(item) => <CelulaItem livro={item} listaLivros={listaLivros} setListaLivros={setListaLivros} key={item.index} />}
                 listKey={'listaLivros'}
             />
+            <FAB buttonColor="darkviolet" iconTextColor="#FFFFFF" onClickAction={() => { onOpen() }} visible={true} iconTextComponent={<Icon name="plus" />} />
 
+            <Modalize
+                ref={modalizeRef}
+                modalStyle={{ backgroundColor: '#222', paddingVertical: 30, paddingHorizontal: 20 }}
+                handleStyle={{ backgroundColor: '#aaa', paddingTop: 10 }}
+                handlePosition={'inside'}
+                adjustToContentHeight={true}
+                FooterComponent={<View style={{ height: 20 }} />}>
+
+                <View style={{ height: 500, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ color: '#fff' }}>INSIRA AQUI SEU NOVO LIVRO</Text>
+                </View>
+            </Modalize>
         </View>
 
     )
@@ -41,16 +85,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'space-evenly',
-
-        paddingTop: '5%',
-
+        paddingTop: '1%',
         flexWrap: 'wrap'
-
     },
-    header:{
-        flexDirection:'row',
-        marginHorizontal:'3%',
-        marginVertical:'1%'
+    header: {
+        flexDirection: 'row',
+        marginHorizontal: '5%',
+        marginVertical: '1%'
     },
     item: {
         alignItems: 'center',

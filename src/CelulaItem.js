@@ -1,22 +1,38 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import CheckBox from '@react-native-community/checkbox';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
-export default function CelulaItem(props) {
-    console.log(props.item)
+export default function CelulaItem({ livro, listaLivros, setListaLivros }) {
+    console.log(livro.item)
+    console.log(listaLivros)
+    console.log(' - - - - - ');
+
+
+    const updateStatus = async (type) => {
+        type === 'possui' ?
+            setListaLivros(listaLivros.map(i => i.nome == livro.item.nome ? (i.possui = !i.possui, i) : i))
+            :
+            setListaLivros(listaLivros.map(i => i.nome == livro.item.nome ? (i.lido = !i.lido, i) : i))
+
+        try {
+            await AsyncStorage.setItem('@lista', JSON.stringify(listaLivros))
+        } catch (error) {
+
+        }
+    }
+
     return (
 
-        // <View style={styles.container} >
         <View style={styles.item}>
-            <Text style={styles.texto}>{props.item.nome}</Text>
+            <Text style={styles.texto}>{livro.item.nome}</Text>
             <View style={styles.checkBox}>
-                <CheckBox tintColor={'white'} onCheckColor={'violet'} onTintColor={'violet'} value={props.item.possui} />
-                <CheckBox tintColor={'white'} onCheckColor={'violet'} onTintColor={'violet'} value={props.item.lido} />
+                <CheckBox tintColors={{ true: 'darkviolet' }} tintColor={'white'} onCheckColor={'violet'} onTintColor={'violet'} value={livro.item.possui} onValueChange={() => updateStatus('possui')} />
+                <CheckBox tintColors={{ true: 'darkviolet' }} tintColor={'white'} onCheckColor={'violet'} onTintColor={'violet'} value={livro.item.lido} onValueChange={() => updateStatus('lido')} />
             </View>
         </View>
 
-        // </View>
 
     )
 }
@@ -33,11 +49,12 @@ const styles = StyleSheet.create({
 
     },
     item: {
+        alignSelf: 'center',
         alignItems: 'center',
         height: 60,
-        width: '100%',
+        width: '95%',
         backgroundColor: 'rgba(255,255,255,0.1)',
-        borderWidth: 1,
+        borderWidth: 0,
         borderColor: 'violet',
         borderRadius: 20,
         marginVertical: '1%',
@@ -51,12 +68,12 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         width: '64%',
         margin: '2%',
-        flexWrap:'wrap'
+        flexWrap: 'wrap'
     },
     checkBox: {
         width: '30%',
         padding: '2%',
-        flexDirection:'row',
-        justifyContent:'space-between'
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     }
 })

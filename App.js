@@ -19,27 +19,24 @@ import Itens from './src/Itens';
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: '#000' ,
-  };
-
   return (
-    <SafeAreaView style={[backgroundStyle,{height:'100%'}]}>
-      <StatusBar barStyle={'light-content' } />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
+    <SafeAreaView style={styles.backgroundStyle}>
+      <StatusBar barStyle={'light-content'} />
+      <View style={styles.backgroundStyle}>
         <Header />
-        <View
-          style={{backgroundColor:'#000'}}>
-        </View>
         <Itens />
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+
+  backgroundStyle: {
+    backgroundColor: '#111',
+    flex: 1
+  },
+
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,
